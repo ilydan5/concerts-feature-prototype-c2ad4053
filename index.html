@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <title>Концерты — Яндекс Музыка</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand" aria-label="На главную">
+        <span class="brand-mark">M</span>
+        <span class="brand-name">Музыка</span>
+      </button>
+      <button class="icon-button" id="notificationsButton" aria-label="Уведомления">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 11h4" /></svg>
+        <span class="notification-dot"></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Москва</p>
+          <h1>Концерты</h1>
+        </div>
+        <button class="location-button" id="locationButton">
+          <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        </button>
+      </section>
+
+      <nav class="tabs" aria-label="Разделы концертов">
+        <button class="tab active" data-tab="for-you">Для вас</button>
+        <button class="tab" data-tab="calendar">Календарь</button>
+        <button class="tab" data-tab="artists">Мои артисты <span id="artistsCount">3</span></button>
+      </nav>
+
+      <section class="panel active" id="for-you">
+        <div class="section-heading">
+          <h2>Избранные артисты</h2>
+          <button class="text-button" id="manageArtists">Управлять</button>
+        </div>
+
+        <div class="artist-strip" id="artistStrip">
+          <button class="artist-card" data-artist="Монеточка">
+            <span class="avatar avatar-monet"><span>М</span></span>
+            <span class="artist-name">Монеточка</span>
+            <span class="status live">2 события</span>
+          </button>
+          <button class="artist-card" data-artist="Иван Дорн">
+            <span class="avatar avatar-dorn"><span>ИД</span></span>
+            <span class="artist-name">Иван Дорн</span>
+            <span class="status">Отслеживается</span>
+          </button>
+          <button class="artist-card" data-artist="Saluki">
+            <span class="avatar avatar-saluki"><span>S</span></span>
+            <span class="artist-name">Saluki</span>
+            <span class="status">1 событие</span>
+          </button>
+          <button class="artist-card add-card" id="addArtistCard">
+            <span class="add-circle">+</span>
+            <span class="artist-name">Добавить</span>
+            <span class="status">Артиста</span>
+          </button>
+        </div>
+
+        <div class="section-heading recents-heading">
+          <h2>Для вас</h2>
+          <button class="filter-button" id="filterButton">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
+            Фильтры
+          </button>
+        </div>
+
+        <div class="alerts" id="alerts">
+          <button class="alert-card" data-alert="sale">
+            <span class="alert-icon yellow">%</span>
+            <span class="alert-copy"><strong>Билеты подешевели</strong><small>Монеточка · «Дискотека»</small></span>
+            <span class="old-price">2 900 ₽</span>
+            <span class="new-price">от 2 100 ₽</span>
+          </button>
+        </div>
+
+        <div class="concert-list" id="concertList">
+          <article class="concert-card" data-artist="Монеточка" data-date="2026-12-14">
+            <div class="poster poster-monet">
+              <span class="poster-label">MO</span>
+              <span class="poster-date">14 <small>ДЕК</small></span>
+            </div>
+            <div class="concert-info">
+              <div class="concert-title-row">
+                <div>
+                  <h3>Монеточка</h3>
+                  <p>Дискотека авария</p>
+                </div>
+                <button class="heart-button tracked" aria-label="Отслеживать" data-heart="Монеточка">
+                  <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+                </button>
+              </div>
+              <p class="venue">Космонавт · Санкт-Петербург</p>
+              <div class="concert-footer">
+                <span class="ticket-status selling">Билеты есть</span>
+                <strong>от 2 100 ₽</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="concert-card" data-artist="Иван Дорн" data-date="2027-01-24">
+            <div class="poster poster-dorn">
+              <span class="poster-label">DORN</span>
+              <span class="poster-date">24 <small>ЯНВ</small></span>
+            </div>
+            <div class="concert-info">
+              <div class="concert-title-row">
+                <div>
+                  <h3>Иван Дорн</h3>
+                  <p>Open Air Tour</p>
+                </div>
+                <button class="heart-button tracked" aria-label="Отслеживать" data-heart="Иван Дорн">
+                  <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+                </button>
+              </div>
+              <p class="venue">Zажигай · Москва</p>
+              <div class="concert-footer">
+                <span class="ticket-status soon">Старт продаж 20:00</span>
+                <strong>от 3 500 ₽</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="concert-card" data-artist="Saluki" data-date="2027-02-08">
+            <div class="poster poster-saluki">
+              <span class="poster-label">SALUKI</span>
+              <span class="poster-date">08 <small>ФЕВ</small></span>
+            </div>
+            <div class="concert-info">
+              <div class="concert-title-row">
+                <div>
+                  <h3>Saluki</h3>
+                  <p>В первый раз на фестивале</p>
+                </div>
+                <button class="heart-button tracked" aria-label="Отслеживать" data-heart="Saluki">
+                  <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+                </button>
+              </div>
+              <p class="venue">Adrenaline Stadium · Москва</p>
+              <div class="concert-footer">
+                <span class="ticket-status sold">Мало билетов</span>
+                <strong>от 4 200 ₽</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="calendar">
+        <div class="calendar-header">
+          <button class="month-arrow" aria-label="Прошлый месяц">‹</button>
+          <h2>Декабрь 2026</h2>
+          <button class="month-arrow" aria-label="Следующий месяц">›</button>
+        </div>
+        <div class="weekdays"><span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>ВС</span></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-events">
+          <h3>14 декабря</h3>
+          <div class="mini-event"><span class="mini-dot yellow-dot"></span><strong>Монеточка</strong><span>Космонавт</span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="artists">
+        <div class="section-heading">
+          <h2>Мои артисты</h2>
+          <button class="text-button" id="artistsAdd">Добавить</button>
+        </div>
+        <div class="tracked-list" id="trackedList"></div>
+        <div class="empty-artists" id="emptyArtists">
+          <div class="empty-illustration">
+            <span class="empty-ring"></span>
+            <span class="empty-note">♪</span>
+          </div>
+          <h3>Кого хотите отслеживать?</h3>
+          <p>Добавьте исполнителей, чтобы не пропустить концерты и изменения билетов.</p>
+          <button class="sheet-button" id="emptyAddArtist">Добавить артиста</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9h-6v-6H9v6H3Z"/></svg><span>Главная</span></button>
+      <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Поиск</span></button>
+      <button class="active"><svg viewBox="0 0 24 24"><path d="M7 3v18M17 3v18M7 8h10M7 16h10"/></svg><span>Концерты</span></button>
+      <button><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg><span>Моя музыка</span></button>
+    </nav>
+  </div>
+
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <aside class="bottom-sheet" id="bottomSheet" aria-hidden="true">
+    <div class="sheet-grabber"></div>
+    <div id="sheetContent"></div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
