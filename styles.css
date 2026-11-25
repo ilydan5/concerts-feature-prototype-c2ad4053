@@ -446,8 +446,18 @@ main::-webkit-scrollbar { display:none; }
 .topbar-tools .icon-button svg { width:19px; }
 .hero { padding:2px 18px 8px; }
 .hero h1 { margin:0; }
-.home-actions { justify-content:center; padding:3px 18px 15px; }
+.home-actions {
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:center;
+  padding:3px 18px 15px;
+}
 .home-action.primary {
+  flex:0 0 190px;
+  width:190px;
+  margin-left:auto;
+  margin-right:auto;
   min-width:190px;
   min-height:42px;
   justify-content:center;
