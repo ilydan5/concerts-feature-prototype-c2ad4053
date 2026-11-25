@@ -136,13 +136,15 @@ function openArtistProfile(name) {
         <span class="profile-copy"><strong>${name}</strong><small>2 ближайших концерта</small></span>
       </div>
       <button class="follow-button" id="openFollowSetup">Настроить отслеживание</button>
-      <div class="profile-concert">
-        <span class="profile-concert-date"><strong>14</strong><small>ДЕК</small></span>
-        <span class="profile-concert-info"><strong>${name}</strong><small>Космонавт · Санкт-Петербург · от 2 100 ₽</small></span>
-      </div>
-      <div class="profile-concert">
-        <span class="profile-concert-date"><strong>24</strong><small>ЯНВ</small></span>
-        <span class="profile-concert-info"><strong>${name}</strong><small>Zажигай · Москва · от 3 500 ₽</small></span>
+      <div class="profile-concert-list">
+        <div class="profile-concert">
+          <div class="poster poster-monet"><span class="poster-label">LIVE</span><span class="poster-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span></div>
+          <span class="profile-concert-info"><strong>${name}</strong><small>Концерт · Санкт-Петербург</small></span>
+        </div>
+        <div class="profile-concert">
+          <div class="poster poster-dorn"><span class="poster-label">LIVE</span><span class="poster-date"><small>ЯНВ</small><strong>24</strong><em>ВС</em></span></div>
+          <span class="profile-concert-info"><strong>${name}</strong><small>Open Air · Москва</small></span>
+        </div>
       </div>
     </div>
   `);
@@ -247,13 +249,15 @@ function populateArtist(name) {
   list.insertAdjacentHTML('beforeend', `
     <div class="populated-concerts">
       <h3>Ближайшие концерты</h3>
-      <div class="populated-concert">
-        <span class="populated-concert-date"><strong>14</strong><small>ДЕК</small></span>
-        <span class="populated-concert-info"><strong>${name}</strong><small>Космонавт · Санкт-Петербург<br>Билеты есть · от 2 100 ₽</small></span>
-      </div>
-      <div class="populated-concert">
-        <span class="populated-concert-date"><strong>24</strong><small>ЯНВ</small></span>
-        <span class="populated-concert-info"><strong>${name}</strong><small>Zажигай · Москва<br>Старт продаж 20:00 · от 3 500 ₽</small></span>
+      <div class="concert-carousel populated-grid">
+        <article class="concert-card">
+          <div class="poster poster-monet"><span class="poster-label">LIVE</span><span class="poster-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span></div>
+          <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Дискотека авария</p></div></div><p class="venue">Космонавт · Санкт-Петербург</p><div class="concert-footer"><span class="ticket-status selling">Билеты есть</span><strong>от 2 100 ₽</strong></div></div>
+        </article>
+        <article class="concert-card">
+          <div class="poster poster-dorn"><span class="poster-label">LIVE</span><span class="poster-date"><small>ЯНВ</small><strong>24</strong><em>ВС</em></span></div>
+          <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Open Air Tour</p></div></div><p class="venue">Zажигай · Москва</p><div class="concert-footer"><span class="ticket-status soon">Старт продаж</span><strong>от 3 500 ₽</strong></div></div>
+        </article>
       </div>
     </div>
   `);
