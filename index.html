@@ -10,27 +10,34 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
+      <span class="topbar-spacer" aria-hidden="true"></span>
       <button class="city-control" id="locationButton"><span class="city-pin">●</span><span class="city-label">Москва</span><span class="city-chevron">⌄</span></button>
-      <button class="icon-button" id="notificationsButton" aria-label="Уведомления">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 11h4" /></svg>
-        <span class="notification-dot"></span>
-      </button>
+      <div class="topbar-tools">
+        <button class="icon-button" id="notificationsButton" aria-label="Уведомления">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 11h4" /></svg>
+          <span class="notification-dot"></span>
+        </button>
+        <button class="icon-button" id="searchOpen" aria-label="Поиск концертов">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        </button>
+      </div>
     </header>
 
     <main>
       <section class="hero">
         <h1>Концерты</h1>
-        <button class="hero-search" id="searchOpen" aria-label="Поиск концертов"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Артисты и концерты</span></button>
       </section>
 
       <div class="home-actions">
         <button class="home-action primary" data-tab="artists"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.9-8.6a5.5 5.5 0 0 0-.1-7.8Z"/></svg>Мои артисты <span id="artistsCount">0</span></button>
-        <button class="home-action" data-tab="calendar">Календарь</button>
       </div>
 
       <section class="panel active" id="for-you">
         <button class="featured-card" id="featuredConcert">
           <span class="featured-art"><span class="featured-orb"></span><span class="featured-word">LIVE<br>2026</span><span class="featured-sticker">НОВАЯ<br>ДАТА</span></span>
+          <span class="featured-ticket-notch top" aria-hidden="true"></span>
+          <span class="featured-ticket-notch side" aria-hidden="true"></span>
+          <span class="featured-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span>
           <span class="featured-copy"><small>КОНЦЕРТ НЕДЕЛИ</small><strong>Монеточка</strong><span>14 декабря · Санкт-Петербург</span></span>
           <span class="featured-cta">Билеты от 2 100 ₽ <b>→</b></span>
           <span class="featured-pagination"><i class="selected"></i><i></i><i></i></span>
@@ -46,7 +53,7 @@
         </section>
 
         <section class="recommend-block concert-recommendations">
-          <div class="section-heading"><h2>Концерты для вас</h2><button class="filter-button" id="filterButton">Фильтры</button></div>
+          <div class="section-heading"><h2>Концерты для вас</h2><span class="section-actions"><button class="text-button" data-tab="calendar">Календарь</button><button class="filter-button" id="filterButton">Фильтры</button></span></div>
           <div class="concert-carousel" id="concertList">
           <article class="concert-card" data-artist="Монеточка" data-date="2026-12-14">
             <div class="poster poster-monet">
