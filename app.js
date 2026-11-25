@@ -29,14 +29,10 @@ function closeSheet() {
 
 sheetBackdrop.addEventListener('click', closeSheet);
 
-$$('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    $$('.tab').forEach(item => item.classList.remove('active'));
-    $$('.panel').forEach(panel => panel.classList.remove('active'));
-    tab.classList.add('active');
-    $('#' + tab.dataset.tab).classList.add('active');
-  });
-});
+function setPanel(panelId) {
+  $$('.panel').forEach(panel => panel.classList.toggle('active', panel.id === panelId));
+  $$('[data-tab]').forEach(button => button.classList.toggle('active', button.dataset.tab === panelId));
+}
 
 $$('[data-heart]').forEach(button => {
   button.addEventListener('click', event => {
@@ -67,10 +63,7 @@ function openNotifications() {
   `);
   $('#openPriceConcert').addEventListener('click', () => {
     closeSheet();
-    $$('.tab').forEach(item => item.classList.remove('active'));
-    $$('.panel').forEach(panel => panel.classList.remove('active'));
-    $$('.tab[data-tab="for-you"]').forEach(item => item.classList.add('active'));
-    $('#for-you').classList.add('active');
+    setPanel('for-you');
   });
 }
 
@@ -104,32 +97,30 @@ function artistSettingsSheet() {
   });
 }
 
-$('#manageArtists').addEventListener('click', artistSettingsSheet);
-
 function searchArtistSheet() {
-  openSheet(`
-    <div class="sheet-title"><h2>Найти артиста</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
-    <input class="search-box" id="artistSearch" placeholder="Имя исполнителя" autocomplete="off" />
-    <button class="search-result" data-name="Аня Калашникова"><span class="avatar" style="background:#c6a8e8"><span>АК</span></span><strong>Аня Калашникова</strong><em>Добавить</em></button>
-    <button class="search-result" data-name="Noize MC"><span class="avatar" style="background:#7ba3a1"><span>N</span></span><strong>Noize MC</strong><em>Добавить</em></button>
-    <button class="search-result" data-name="Пётр Налич"><span class="avatar" style="background:#cf9d76"><span>ПН</span></span><strong>Пётр Налич</strong><em>Добавить</em></button>
-  `);
-  $$('.search-result', bottomSheet).forEach(button => {
-    button.addEventListener('click', () => {
-      openArtistProfile(button.dataset.name);
-    });
-  });
-  $('#artistSearch').addEventListener('input', event => {
-    const value = event.target.value.toLowerCase();
-    $$('.search-result', bottomSheet).forEach(row => {
-      row.style.display = row.dataset.name.toLowerCase().includes(value) ? 'flex' : 'none';
-    });
-  });
+  const searchScreen = $('#searchScreen');
+  searchScreen.classList.add('open');
+  searchScreen.setAttribute('aria-hidden', 'false');
+  $('#artistSearch').focus();
 }
 
-$('#addArtistCard').addEventListener('click', searchArtistSheet);
 $('#artistsAdd').addEventListener('click', searchArtistSheet);
 $('#emptyAddArtist').addEventListener('click', searchArtistSheet);
+$('#searchOpen').addEventListener('click', searchArtistSheet);
+$('#navSearch').addEventListener('click', searchArtistSheet);
+$('#searchBack').addEventListener('click', () => {
+  $('#searchScreen').classList.remove('open');
+  $('#searchScreen').setAttribute('aria-hidden', 'true');
+});
+$('#artistSearch').addEventListener('input', event => {
+  const query = event.target.value.toLowerCase();
+  $$('.search-result', $('#searchResults')).forEach(result => {
+    result.style.display = result.dataset.name.toLowerCase().includes(query) ? 'flex' : 'none';
+  });
+});
+$$('.search-result', $('#searchResults')).forEach(result => result.addEventListener('click', () => openArtistProfile(result.dataset.name)));
+$$('[data-tab]').forEach(button => button.addEventListener('click', () => setPanel(button.dataset.tab)));
+$('#navConcerts').addEventListener('click', () => setPanel('for-you'));
 
 let followingArtist = null;
 
@@ -195,7 +186,21 @@ function openFollowSetup() {
   });
 }
 
-$$('.artist-card[data-artist]').forEach(card => card.addEventListener('click', () => openArtistProfile(card.dataset.artist)));
+$$('.recommend-follow[data-artist]').forEach(card => card.addEventListener('click', () => openArtistProfile(card.dataset.artist)));
+
+$('#featuredConcert').addEventListener('click', () => openArtistProfile('Монеточка'));
+$('#featuredConcert .featured-pagination').addEventListener('click', event => {
+  event.stopPropagation();
+  if (event.target.matches('i')) {
+    $$('#featuredConcert .featured-pagination i').forEach(dot => dot.classList.toggle('selected', dot === event.target));
+  }
+});
+$('#priceAlertOpen').addEventListener('click', openNotifications);
+$('#playerToggle').addEventListener('click', event => {
+  const playing = event.currentTarget.textContent === 'Ⅱ';
+  event.currentTarget.textContent = playing ? '▶' : 'Ⅱ';
+  event.currentTarget.setAttribute('aria-label', playing ? 'Воспроизвести' : 'Пауза');
+});
 
 $('#filterButton').addEventListener('click', () => {
   openSheet(`
@@ -221,7 +226,7 @@ $('#locationButton').addEventListener('click', () => {
   `);
   $$('.search-result', bottomSheet).forEach(row => row.addEventListener('click', () => {
     if (row.dataset.city) {
-      $('.eyebrow').textContent = row.dataset.city;
+      $('.city-label').textContent = row.dataset.city;
       closeSheet();
       showToast(`Город: ${row.dataset.city}`);
     }
@@ -256,10 +261,9 @@ function populateArtist(name) {
   $('#emptyArtists').classList.remove('visible');
   $('#artistsCount').textContent = '1';
   showToast(`${name} добавлен в отслеживание`);
-  $$('.tab').forEach(item => item.classList.remove('active'));
-  $$('.panel').forEach(panel => panel.classList.remove('active'));
-  $$('.tab[data-tab="artists"]').forEach(item => item.classList.add('active'));
-  $('#artists').classList.add('active');
+  $('#searchScreen').classList.remove('open');
+  $('#searchScreen').setAttribute('aria-hidden', 'true');
+  setPanel('artists');
   $$('.remove-artist', list).forEach(button => button.addEventListener('click', event => {
     event.stopPropagation();
     showEmptyArtists();

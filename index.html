@@ -10,10 +10,7 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <button class="brand" aria-label="На главную">
-        <span class="brand-mark">M</span>
-        <span class="brand-name">Музыка</span>
-      </button>
+      <button class="city-control" id="locationButton"><span class="city-pin">●</span><span class="city-label">Москва</span><span class="city-chevron">⌄</span></button>
       <button class="icon-button" id="notificationsButton" aria-label="Уведомления">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 11h4" /></svg>
         <span class="notification-dot"></span>
@@ -22,68 +19,35 @@
 
     <main>
       <section class="hero">
-        <div>
-          <p class="eyebrow">Москва</p>
-          <h1>Концерты</h1>
-        </div>
-        <button class="location-button" id="locationButton">
-          <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-        </button>
+        <h1>Концерты</h1>
+        <button class="hero-search" id="searchOpen" aria-label="Поиск концертов"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Артисты и концерты</span></button>
       </section>
 
-      <nav class="tabs" aria-label="Разделы концертов">
-        <button class="tab active" data-tab="for-you">Для вас</button>
-        <button class="tab" data-tab="calendar">Календарь</button>
-        <button class="tab" data-tab="artists">Мои артисты <span id="artistsCount">0</span></button>
-      </nav>
+      <div class="home-actions">
+        <button class="home-action primary" data-tab="artists"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.9-8.6a5.5 5.5 0 0 0-.1-7.8Z"/></svg>Мои артисты <span id="artistsCount">0</span></button>
+        <button class="home-action" data-tab="calendar">Календарь</button>
+      </div>
 
       <section class="panel active" id="for-you">
-        <div class="section-heading">
-          <h2>Избранные артисты</h2>
-          <button class="text-button" id="manageArtists">Управлять</button>
-        </div>
+        <button class="featured-card" id="featuredConcert">
+          <span class="featured-art"><span class="featured-orb"></span><span class="featured-word">LIVE<br>2026</span><span class="featured-sticker">НОВАЯ<br>ДАТА</span></span>
+          <span class="featured-copy"><small>КОНЦЕРТ НЕДЕЛИ</small><strong>Монеточка</strong><span>14 декабря · Санкт-Петербург</span></span>
+          <span class="featured-cta">Билеты от 2 100 ₽ <b>→</b></span>
+          <span class="featured-pagination"><i class="selected"></i><i></i><i></i></span>
+        </button>
 
-        <div class="artist-strip" id="artistStrip">
-          <button class="artist-card" data-artist="Монеточка">
-            <span class="avatar avatar-monet"><span>М</span></span>
-            <span class="artist-name">Монеточка</span>
-            <span class="status live">2 события</span>
-          </button>
-          <button class="artist-card" data-artist="Иван Дорн">
+        <section class="recommend-block">
+          <div class="section-heading"><h2>Следите за любимыми</h2><button class="text-button" data-tab="artists">Мои артисты</button></div>
+          <div class="recommend-card">
             <span class="avatar avatar-dorn"><span>ИД</span></span>
-            <span class="artist-name">Иван Дорн</span>
-            <span class="status">Отслеживается</span>
-          </button>
-          <button class="artist-card" data-artist="Saluki">
-            <span class="avatar avatar-saluki"><span>S</span></span>
-            <span class="artist-name">Saluki</span>
-            <span class="status">1 событие</span>
-          </button>
-          <button class="artist-card add-card" id="addArtistCard">
-            <span class="add-circle">+</span>
-            <span class="artist-name">Добавить</span>
-            <span class="status">Артиста</span>
-          </button>
-        </div>
+            <span class="recommend-copy"><strong>Иван Дорн</strong><small>Новые даты и билеты — в одном месте</small></span>
+            <button class="recommend-follow" data-artist="Иван Дорн" aria-label="Открыть Ивана Дорна">+</button>
+          </div>
+        </section>
 
-        <div class="section-heading recents-heading">
-          <h2>Для вас</h2>
-          <button class="filter-button" id="filterButton">
-            <svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
-            Фильтры
-          </button>
-        </div>
-
-        <div class="alerts" id="alerts">
-          <button class="alert-card" data-alert="sale">
-            <span class="alert-icon yellow">%</span>
-            <span class="alert-copy"><strong>Билеты подешевели</strong><small>Монеточка · «Дискотека»</small></span>
-            <span class="old-price">2 900 ₽</span>
-            <span class="new-price">от 2 100 ₽</span>
-          </button>
-        </div>
-
-        <div class="concert-list" id="concertList">
+        <section class="recommend-block concert-recommendations">
+          <div class="section-heading"><h2>Концерты для вас</h2><button class="filter-button" id="filterButton">Фильтры</button></div>
+          <div class="concert-carousel" id="concertList">
           <article class="concert-card" data-artist="Монеточка" data-date="2026-12-14">
             <div class="poster poster-monet">
               <span class="poster-label">MO</span>
@@ -152,7 +116,20 @@
               </div>
             </div>
           </article>
-        </div>
+          </div>
+        </section>
+
+        <section class="recommend-block">
+          <div class="section-heading"><h2>Изменения билетов</h2><button class="text-button" id="priceAlertOpen">Все</button></div>
+          <div class="alerts" id="alerts">
+            <button class="alert-card" data-alert="sale">
+              <span class="alert-icon yellow">%</span>
+              <span class="alert-copy"><strong>Билеты подешевели</strong><small>Монеточка · «Дискотека»</small></span>
+              <span class="old-price">2 900 ₽</span>
+              <span class="new-price">от 2 100 ₽</span>
+            </button>
+          </div>
+        </section>
       </section>
 
       <section class="panel" id="calendar">
@@ -189,11 +166,31 @@
 
     <nav class="bottom-nav">
       <button><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9h-6v-6H9v6H3Z"/></svg><span>Главная</span></button>
-      <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Поиск</span></button>
-      <button class="active"><svg viewBox="0 0 24 24"><path d="M7 3v18M17 3v18M7 8h10M7 16h10"/></svg><span>Концерты</span></button>
+      <button id="navSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Поиск</span></button>
+      <button class="active" id="navConcerts"><svg viewBox="0 0 24 24"><path d="M7 3v18M17 3v18M7 8h10M7 16h10"/></svg><span>Концерты</span></button>
       <button><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg><span>Моя музыка</span></button>
     </nav>
+    <div class="mini-player" id="miniPlayer">
+      <span class="mini-cover">♫</span>
+      <span class="mini-track"><strong>Криолик</strong><small>Монеточка</small></span>
+      <button id="playerToggle" aria-label="Пауза">Ⅱ</button>
+      <button aria-label="Следующий трек">⏭</button>
+    </div>
   </div>
+
+  <section class="search-screen" id="searchScreen" aria-hidden="true">
+    <header class="search-header">
+      <button class="search-back" id="searchBack" aria-label="Назад">‹</button>
+      <label class="search-input-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="artistSearch" placeholder="Артисты и концерты" autocomplete="off"></label>
+    </header>
+    <h2>На чей концерт хотите сходить?</h2>
+    <div class="search-results" id="searchResults">
+      <button class="search-result" data-name="Монеточка"><span class="avatar avatar-monet"><span>М</span></span><strong>Монеточка</strong><em>Артист</em></button>
+      <button class="search-result" data-name="Иван Дорн"><span class="avatar avatar-dorn"><span>ИД</span></span><strong>Иван Дорн</strong><em>Артист</em></button>
+      <button class="search-result" data-name="Saluki"><span class="avatar avatar-saluki"><span>S</span></span><strong>Saluki</strong><em>Артист</em></button>
+      <button class="search-result" data-name="Noize MC"><span class="avatar"><span>N</span></span><strong>Noize MC</strong><em>Артист</em></button>
+    </div>
+  </section>
 
   <div class="sheet-backdrop" id="sheetBackdrop"></div>
   <aside class="bottom-sheet" id="bottomSheet" aria-hidden="true">
