@@ -48,22 +48,33 @@ $$('[data-heart]').forEach(button => {
 });
 
 $('#notificationsButton').addEventListener('click', () => {
-  openSheet(`
-    <div class="sheet-title"><h2>Уведомления</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Монеточка</strong><small>Билеты подешевели · 2 100 ₽</small></span>
-      <span class="ticket-status selling">Сегодня</span>
-    </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Иван Дорн</strong><small>Объявлены новые даты концерта</small></span>
-      <span class="ticket-status soon">Вчера</span>
-    </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Saluki</strong><small>Осталось мало билетов</small></span>
-      <span class="ticket-status sold">2 дн.</span>
-    </div>
-  `);
+  openNotifications();
 });
+
+function openNotifications() {
+  openSheet(`
+    <div class="sheet-title"><h2>Уведомление</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
+    <div class="alert-card" style="margin:4px 0 12px">
+      <span class="alert-icon yellow">%</span>
+      <span class="alert-copy"><strong>Монеточка</strong><small>Билеты подешевели</small></span>
+      <span class="old-price">2 900 ₽</span>
+      <span class="new-price">от 2 100 ₽</span>
+    </div>
+    <div class="setting-row">
+      <span class="setting-copy"><strong>Дискотека авария</strong><small>Космонавт · Санкт-Петербург · 14 декабря</small></span>
+    </div>
+    <button class="sheet-button" id="openPriceConcert">Посмотреть концерт</button>
+  `);
+  $('#openPriceConcert').addEventListener('click', () => {
+    closeSheet();
+    $$('.tab').forEach(item => item.classList.remove('active'));
+    $$('.panel').forEach(panel => panel.classList.remove('active'));
+    $$('.tab[data-tab="for-you"]').forEach(item => item.classList.add('active'));
+    $('#for-you').classList.add('active');
+  });
+}
+
+$('#alerts')?.addEventListener('click', openNotifications);
 
 function artistSettingsSheet() {
   openSheet(`
@@ -105,10 +116,7 @@ function searchArtistSheet() {
   `);
   $$('.search-result', bottomSheet).forEach(button => {
     button.addEventListener('click', () => {
-      button.query = true;
-      button.querySelector('em').textContent = 'Добавлен';
-      showToast(`${button.dataset.name} теперь в отслеживаемых`);
-      $('#artistsCount').textContent = String(Number($('#artistsCount').textContent) + 1);
+      openArtistProfile(button.dataset.name);
     });
   });
   $('#artistSearch').addEventListener('input', event => {
@@ -123,9 +131,12 @@ $('#addArtistCard').addEventListener('click', searchArtistSheet);
 $('#artistsAdd').addEventListener('click', searchArtistSheet);
 $('#emptyAddArtist').addEventListener('click', searchArtistSheet);
 
+let followingArtist = null;
+
 function openArtistProfile(name) {
-  const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : 'avatar-saluki';
-  const initials = name === 'Монеточка' ? 'М' : name === 'Иван Дорн' ? 'ИД' : 'S';
+  followingArtist = name;
+  const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : name === 'Saluki' ? 'avatar-saluki' : 'avatar-monet';
+  const initials = name === 'Монеточка' ? 'М' : name === 'Иван Дорн' ? 'ИД' : name === 'Saluki' ? 'S' : name.slice(0, 2).toUpperCase();
   openSheet(`
     <div class="sheet-title"><h2>Карточка артиста</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
     <div class="artist-profile">
@@ -180,7 +191,7 @@ function openFollowSetup() {
   $$('.switch', bottomSheet).forEach(sw => sw.addEventListener('click', () => sw.classList.toggle('on')));
   $('#confirmFollow').addEventListener('click', () => {
     closeSheet();
-    showToast('Артист добавлен в отслеживание');
+    populateArtist(followingArtist || 'Артист');
   });
 }
 
@@ -217,30 +228,54 @@ $('#locationButton').addEventListener('click', () => {
   }));
 });
 
-function renderTracked() {
+function populateArtist(name) {
   const list = $('#trackedList');
+  const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : name === 'Saluki' ? 'avatar-saluki' : 'avatar-monet';
+  const initials = name === 'Монеточка' ? 'М' : name === 'Иван Дорн' ? 'ИД' : name === 'Saluki' ? 'S' : name.slice(0, 2).toUpperCase();
   list.innerHTML = `
-    <div class="tracked-row is-removable" data-name="Монеточка"><span class="avatar avatar-monet"><span>М</span></span><span class="tracked-copy"><strong>Монеточка</strong><small>Все уведомления включены</small></span><button class="remove-artist" aria-label="Удалить Монеточку">×</button></div>
-    <div class="tracked-row is-removable" data-name="Иван Дорн"><span class="avatar avatar-dorn"><span>ИД</span></span><span class="tracked-copy"><strong>Иван Дорн</strong><small>Новые концерты и цены</small></span><button class="remove-artist" aria-label="Удалить Иван Дорн">×</button></div>
-    <div class="tracked-row is-removable" data-name="Saluki"><span class="avatar avatar-saluki"><span>S</span></span><span class="tracked-copy"><strong>Saluki</strong><small>Все уведомления включены</small></span><button class="remove-artist" aria-label="Удалить Saluki">×</button></div>
+    <div class="tracked-row is-removable" data-name="${name}">
+      <span class="avatar ${artistClass}"><span>${initials}</span></span>
+      <span class="tracked-copy"><strong>${name}</strong><small>Все уведомления включены</small></span>
+      <button class="remove-artist" aria-label="Удалить ${name}">×</button>
+    </div>
   `;
+  list.insertAdjacentHTML('beforeend', `
+    <div class="populated-concerts">
+      <h3>Ближайшие концерты</h3>
+      <div class="populated-concert">
+        <span class="populated-concert-date"><strong>14</strong><small>ДЕК</small></span>
+        <span class="populated-concert-info"><strong>${name}</strong><small>Космонавт · Санкт-Петербург<br>Билеты есть · от 2 100 ₽</small></span>
+      </div>
+      <div class="populated-concert">
+        <span class="populated-concert-date"><strong>24</strong><small>ЯНВ</small></span>
+        <span class="populated-concert-info"><strong>${name}</strong><small>Zажигай · Москва<br>Старт продаж 20:00 · от 3 500 ₽</small></span>
+      </div>
+    </div>
+  `);
+  list.style.display = 'block';
+  $('#emptyArtists').classList.remove('visible');
+  $('#artistsCount').textContent = '1';
+  showToast(`${name} добавлен в отслеживание`);
+  $$('.tab').forEach(item => item.classList.remove('active'));
+  $$('.panel').forEach(panel => panel.classList.remove('active'));
+  $$('.tab[data-tab="artists"]').forEach(item => item.classList.add('active'));
+  $('#artists').classList.add('active');
   $$('.remove-artist', list).forEach(button => button.addEventListener('click', event => {
     event.stopPropagation();
-    const row = button.closest('.tracked-row');
-    row.remove();
-    const count = $$('.tracked-row', list).length;
-    $('#artistsCount').textContent = String(count);
-    if (!count) showEmptyArtists();
-    showToast(`${row.dataset.name} удалён из отслеживания`);
+    showEmptyArtists();
   }));
   $$('.tracked-row', list).forEach(row => row.addEventListener('click', () => openArtistProfile(row.dataset.name)));
 }
-renderTracked();
 
 function showEmptyArtists() {
+  $('#trackedList').innerHTML = '';
   $('#trackedList').style.display = 'none';
   $('#emptyArtists').classList.add('visible');
+  $('#artistsCount').textContent = '0';
+  followingArtist = null;
 }
+
+showEmptyArtists();
 
 function renderCalendar() {
   const grid = $('#calendarGrid');

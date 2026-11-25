@@ -178,6 +178,17 @@ h1 { font-size:32px; line-height:1; margin:0; letter-spacing:-1.2px; }
 .empty-artists p { max-width:280px; margin:0 auto; color:var(--muted); font-size:13px; line-height:1.45; }
 .empty-artists .sheet-button { max-width:260px; margin-top:22px; }
 
+.tracked-list .tracked-row { cursor:pointer; }
+.populated-concerts { padding:4px 16px 14px; }
+.populated-concerts h3 { margin:10px 0 10px; font-size:17px; }
+.populated-concert { min-height:92px; display:grid; grid-template-columns:64px 1fr; gap:0; border-radius:14px; overflow:hidden; background:var(--surface); margin-bottom:8px; }
+.populated-concert-date { background:#eee0a0; color:#171717; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.populated-concert-date strong { font-size:20px; }
+.populated-concert-date small { font-size:9px; margin-top:3px; }
+.populated-concert-info { display:flex; flex-direction:column; justify-content:center; padding:10px 12px; }
+.populated-concert-info strong { font-size:14px; }
+.populated-concert-info small { color:var(--muted); margin-top:5px; line-height:1.35; }
+
 .artist-profile { padding:8px 16px 18px; }
 .artist-profile-head { display:flex; align-items:center; gap:14px; margin:4px 0 16px; }
 .artist-profile-head .avatar { width:78px; height:78px; margin:0; }
