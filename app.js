@@ -95,6 +95,10 @@ function artistSettingsSheet() {
 
 function searchArtistSheet() {
   const searchScreen = $('#searchScreen');
+  $('#artistSearch').value = '';
+  $$('.search-result', $('#searchResults')).forEach(result => {
+    result.style.display = 'flex';
+  });
   searchScreen.classList.add('open');
   searchScreen.setAttribute('aria-hidden', 'false');
   $('#artistSearch').focus();
@@ -119,6 +123,19 @@ $$('[data-tab]').forEach(button => button.addEventListener('click', () => setPan
 $('#navConcerts').addEventListener('click', () => setPanel('for-you'));
 
 let followingArtist = null;
+const followedArtists = [];
+const defaultNotifications = {
+  newConcerts: true,
+  ticketSales: true,
+  priceChanges: true,
+  ticketAvailability: false
+};
+const notificationLabels = {
+  newConcerts: 'новые концерты',
+  ticketSales: 'старт продаж',
+  priceChanges: 'изменение цены',
+  ticketAvailability: 'наличие билетов'
+};
 
 function openArtistProfile(name) {
   followingArtist = name;
@@ -148,39 +165,48 @@ function openArtistProfile(name) {
 }
 
 function openFollowSetup() {
+  const existing = followedArtists.find(artist => artist.name === followingArtist);
+  const selectedCities = existing?.settings.cities || ['Москва'];
+  const notifications = existing?.settings.notifications || defaultNotifications;
+  const cityOptions = ['Москва', 'Санкт-Петербург', 'Казань'];
+  const notificationOptions = [
+    ['newConcerts', 'Новые концерты', 'Новые даты в выбранных городах'],
+    ['ticketSales', 'Старт продаж', 'За час до открытия'],
+    ['priceChanges', 'Изменение цены', 'Любое изменение стоимости'],
+    ['ticketAvailability', 'Наличие билетов', 'Появление и малый остаток']
+  ];
   openSheet(`
     <div class="sheet-title"><h2>Отслеживать артиста</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
     <div class="setting-row">
       <span class="setting-copy"><strong>Города</strong><small>Выберите, где искать концерты</small></span>
     </div>
     <div class="city-chips" style="display:flex;gap:8px;padding:4px 0 12px">
-      <button class="filter-button selected-city" style="background:var(--yellow);color:#111;border:0">Москва</button>
-      <button class="filter-button">Санкт-Петербург</button>
-      <button class="filter-button">Казань</button>
+      ${cityOptions.map(city => `<button class="filter-button${selectedCities.includes(city) ? ' selected-city' : ''}" data-city="${city}" style="${selectedCities.includes(city) ? 'background:var(--yellow);color:#111;border:0' : ''}">${city}</button>`).join('')}
     </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Новые концерты</strong><small>Новые даты в выбранных городах</small></span><button class="switch on"></button>
-    </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Старт продаж</strong><small>За час до открытия</small></span><button class="switch on"></button>
-    </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Изменение цены</strong><small>Любое изменение стоимости</small></span><button class="switch on"></button>
-    </div>
-    <div class="setting-row">
-      <span class="setting-copy"><strong>Наличие билетов</strong><small>Появление и малый остаток</small></span><button class="switch"></button>
-    </div>
+    ${notificationOptions.map(([key, title, description]) => `
+      <div class="setting-row">
+        <span class="setting-copy"><strong>${title}</strong><small>${description}</small></span>
+        <button class="switch${notifications[key] ? ' on' : ''}" data-setting="${key}" aria-label="${title}"></button>
+      </div>
+    `).join('')}
     <button class="sheet-button" id="confirmFollow">Начать отслеживать</button>
   `);
-  $$('.filter-button', bottomSheet).forEach(button => button.addEventListener('click', () => {
+  $$('.city-chips .filter-button', bottomSheet).forEach(button => button.addEventListener('click', () => {
     button.classList.toggle('selected-city');
     button.style.background = button.classList.contains('selected-city') ? 'var(--yellow)' : '';
     button.style.color = button.classList.contains('selected-city') ? '#111' : '';
   }));
-  $$('.switch', bottomSheet).forEach(sw => sw.addEventListener('click', () => sw.classList.toggle('on')));
+  $$('.switch[data-setting]', bottomSheet).forEach(sw => sw.addEventListener('click', () => sw.classList.toggle('on')));
   $('#confirmFollow').addEventListener('click', () => {
+    const settings = {
+      cities: $$('.city-chips .selected-city', bottomSheet).map(button => button.dataset.city),
+      notifications: Object.fromEntries($$('.switch[data-setting]', bottomSheet).map(button => [
+        button.dataset.setting,
+        button.classList.contains('on')
+      ]))
+    };
     closeSheet();
-    populateArtist(followingArtist || 'Артист');
+    populateArtist(followingArtist || 'Артист', settings);
   });
 }
 
@@ -230,55 +256,67 @@ $('#locationButton').addEventListener('click', () => {
   }));
 });
 
-function populateArtist(name) {
-  const list = $('#trackedList');
-  const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : name === 'Saluki' ? 'avatar-saluki' : 'avatar-monet';
-  const initials = name === 'Монеточка' ? 'М' : name === 'Иван Дорн' ? 'ИД' : name === 'Saluki' ? 'S' : name.slice(0, 2).toUpperCase();
-  list.innerHTML = `
-    <div class="tracked-row is-removable" data-name="${name}">
-      <span class="avatar ${artistClass}"><span>${initials}</span></span>
-      <span class="tracked-copy"><strong>${name}</strong><small>Все уведомления включены</small></span>
-      <button class="remove-artist" aria-label="Удалить ${name}">×</button>
-    </div>
-  `;
-  list.insertAdjacentHTML('beforeend', `
-    <div class="populated-concerts">
-      <h3>Ближайшие концерты</h3>
-      <div class="concert-carousel populated-grid">
-        <article class="concert-card">
-          <div class="poster poster-monet"><span class="poster-label">LIVE</span><span class="poster-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span></div>
-          <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Дискотека авария</p></div></div><p class="venue">Космонавт · Санкт-Петербург</p><div class="concert-footer"><span class="ticket-status selling">Билеты есть</span><strong>от 2 100 ₽</strong></div></div>
-        </article>
-        <article class="concert-card">
-          <div class="poster poster-dorn"><span class="poster-label">LIVE</span><span class="poster-date"><small>ЯНВ</small><strong>24</strong><em>ВС</em></span></div>
-          <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Open Air Tour</p></div></div><p class="venue">Zажигай · Москва</p><div class="concert-footer"><span class="ticket-status soon">Старт продаж</span><strong>от 3 500 ₽</strong></div></div>
-        </article>
-      </div>
-    </div>
-  `);
-  list.style.display = 'block';
-  $('#emptyArtists').classList.remove('visible');
-  $('#artistsCount').textContent = '1';
-  showToast(`${name} добавлен в отслеживание`);
+function populateArtist(name, settings) {
+  const existing = followedArtists.find(artist => artist.name === name);
+  if (existing) {
+    existing.settings = settings;
+    showToast(`${name}: настройки обновлены`);
+  } else {
+    followedArtists.push({ name, settings });
+    showToast(`${name} добавлен в отслеживание`);
+  }
+  renderTracked();
   $('#searchScreen').classList.remove('open');
   $('#searchScreen').setAttribute('aria-hidden', 'true');
   setPanel('artists');
+}
+
+function renderTracked() {
+  const list = $('#trackedList');
+  list.innerHTML = followedArtists.map(({ name, settings }) => {
+    const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : name === 'Saluki' ? 'avatar-saluki' : 'avatar-monet';
+    const initials = name === 'Монеточка' ? 'М' : name === 'Иван Дорн' ? 'ИД' : name === 'Saluki' ? 'S' : name.slice(0, 2).toUpperCase();
+    const enabledNotifications = Object.entries(settings.notifications)
+      .filter(([, enabled]) => enabled)
+      .map(([key]) => notificationLabels[key]);
+    const cities = settings.cities.length ? settings.cities.join(', ') : 'Города не выбраны';
+    return `
+      <section class="tracked-artist-group" data-artist-group="${name}">
+        <div class="tracked-row is-removable" data-name="${name}">
+          <span class="avatar ${artistClass}"><span>${initials}</span></span>
+          <span class="tracked-copy"><strong>${name}</strong><small>${cities} · ${enabledNotifications.length ? enabledNotifications.join(', ') : 'уведомления выключены'}</small></span>
+          <button class="remove-artist" data-remove-artist="${name}" aria-label="Удалить ${name}">×</button>
+        </div>
+        <div class="populated-concerts">
+          <h3>Концерты ${name}</h3>
+          <div class="concert-carousel populated-grid">
+            <article class="concert-card">
+              <div class="poster poster-monet"><span class="poster-label">LIVE</span><span class="poster-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span></div>
+              <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Дискотека авария</p></div></div><p class="venue">Космонавт · Санкт-Петербург</p><div class="concert-footer"><span class="ticket-status selling">Билеты есть</span><strong>от 2 100 ₽</strong></div></div>
+            </article>
+            <article class="concert-card">
+              <div class="poster poster-dorn"><span class="poster-label">LIVE</span><span class="poster-date"><small>ЯНВ</small><strong>24</strong><em>ВС</em></span></div>
+              <div class="concert-info"><div class="concert-title-row"><div><h3>${name}</h3><p>Open Air Tour</p></div></div><p class="venue">Zажигай · Москва</p><div class="concert-footer"><span class="ticket-status soon">Старт продаж</span><strong>от 3 500 ₽</strong></div></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    `;
+  }).join('');
+  list.style.display = 'block';
+  $('#emptyArtists').classList.toggle('visible', followedArtists.length === 0);
+  list.style.display = followedArtists.length ? 'block' : 'none';
+  $('#artistsCount').textContent = String(followedArtists.length);
   $$('.remove-artist', list).forEach(button => button.addEventListener('click', event => {
     event.stopPropagation();
-    showEmptyArtists();
+    const index = followedArtists.findIndex(artist => artist.name === button.dataset.removeArtist);
+    if (index >= 0) followedArtists.splice(index, 1);
+    renderTracked();
   }));
   $$('.tracked-row', list).forEach(row => row.addEventListener('click', () => openArtistProfile(row.dataset.name)));
 }
 
-function showEmptyArtists() {
-  $('#trackedList').innerHTML = '';
-  $('#trackedList').style.display = 'none';
-  $('#emptyArtists').classList.add('visible');
-  $('#artistsCount').textContent = '0';
-  followingArtist = null;
-}
-
-showEmptyArtists();
+renderTracked();
 
 function renderCalendar() {
   const grid = $('#calendarGrid');
