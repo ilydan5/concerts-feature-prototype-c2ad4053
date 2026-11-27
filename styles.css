@@ -263,13 +263,6 @@ main::-webkit-scrollbar { display:none; }
 .section-heading { height:auto; min-height:34px; padding:0 18px 10px; }
 .section-heading h2 { font-size:18px; }
 .text-button { font-size:12px; }
-.recommend-card { margin:0 18px; min-height:68px; border-radius:15px; padding:10px 12px; background:#1d1d1d; display:flex; align-items:center; gap:10px; }
-.recommend-card .avatar { width:46px; height:46px; margin:0; }
-.recommend-card .avatar span { width:38px; height:38px; font-size:14px; }
-.recommend-copy { flex:1; display:flex; flex-direction:column; gap:4px; min-width:0; }
-.recommend-copy strong { font-size:14px; }
-.recommend-copy small { color:var(--muted); font-size:11px; }
-.recommend-follow { flex:0 0 34px; width:34px; height:34px; border:0; border-radius:50%; background:#303030; color:var(--yellow); font-size:23px; }
 .concert-recommendations { margin-bottom:14px; }
 .filter-button { height:30px; font-size:11px; }
 .concert-carousel { display:flex; gap:10px; overflow-x:auto; padding:2px 18px 8px; scrollbar-width:none; scroll-snap-type:x mandatory; }
@@ -544,6 +537,8 @@ main::-webkit-scrollbar { display:none; }
 .featured-date strong { font-size:25px; font-weight:900; }
 .featured-date em { font-size:8px; font-style:normal; font-weight:900; }
 .featured-copy { left:80px; right:17px; bottom:82px; gap:6px; }
+.featured-card.featured-empty .featured-date { display:none; }
+.featured-card.featured-empty .featured-copy { left:18px; }
 .featured-copy small { font-size:9px; }
 .featured-copy strong { font-size:25px; }
 .featured-copy span { font-size:11px; line-height:1.35; }

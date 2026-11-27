@@ -124,6 +124,8 @@ $('#navConcerts').addEventListener('click', () => setPanel('for-you'));
 
 let followingArtist = null;
 const followedArtists = [];
+let featuredEvents = [];
+let featuredIndex = 0;
 const defaultNotifications = {
   newConcerts: true,
   ticketSales: true,
@@ -210,14 +212,15 @@ function openFollowSetup() {
   });
 }
 
-$$('.recommend-follow[data-artist]').forEach(card => card.addEventListener('click', () => openArtistProfile(card.dataset.artist)));
-
-$('#featuredConcert').addEventListener('click', () => openArtistProfile('Монеточка'));
+$('#featuredConcert').addEventListener('click', () => {
+  const event = featuredEvents[featuredIndex];
+  openArtistProfile(event?.artist || 'Монеточка');
+});
 $('#featuredConcert .featured-pagination').addEventListener('click', event => {
   event.stopPropagation();
-  if (event.target.matches('i')) {
-    $$('#featuredConcert .featured-pagination i').forEach(dot => dot.classList.toggle('selected', dot === event.target));
-  }
+  if (!event.target.matches('i')) return;
+  featuredIndex = Number(event.target.dataset.index);
+  renderFeatured();
 });
 $('#playerToggle').addEventListener('click', event => {
   const playing = event.currentTarget.textContent === 'Ⅱ';
@@ -265,13 +268,13 @@ function populateArtist(name, settings) {
     followedArtists.push({ name, settings });
     showToast(`${name} добавлен в отслеживание`);
   }
-  renderTracked();
+  renderTracked(name);
   $('#searchScreen').classList.remove('open');
   $('#searchScreen').setAttribute('aria-hidden', 'true');
   setPanel('artists');
 }
 
-function renderTracked() {
+function renderTracked(featureArtist = null) {
   const list = $('#trackedList');
   list.innerHTML = followedArtists.map(({ name, settings }) => {
     const artistClass = name === 'Монеточка' ? 'avatar-monet' : name === 'Иван Дорн' ? 'avatar-dorn' : name === 'Saluki' ? 'avatar-saluki' : 'avatar-monet';
@@ -307,6 +310,7 @@ function renderTracked() {
   $('#emptyArtists').classList.toggle('visible', followedArtists.length === 0);
   list.style.display = followedArtists.length ? 'block' : 'none';
   $('#artistsCount').textContent = String(followedArtists.length);
+  renderFeatured(featureArtist);
   $$('.remove-artist', list).forEach(button => button.addEventListener('click', event => {
     event.stopPropagation();
     const index = followedArtists.findIndex(artist => artist.name === button.dataset.removeArtist);
@@ -314,6 +318,85 @@ function renderTracked() {
     renderTracked();
   }));
   $$('.tracked-row', list).forEach(row => row.addEventListener('click', () => openArtistProfile(row.dataset.name)));
+}
+
+function renderFeatured(preferredArtist = null) {
+  const fallback = {
+    artist: 'Монеточка',
+    month: 'ДЕК',
+    day: '14',
+    weekday: 'ПН',
+    eyebrow: 'КОНЦЕРТ НЕДЕЛИ',
+    details: '14 декабря · Санкт-Петербург',
+    cta: 'Билеты от 2 100 ₽',
+    label: 'НОВАЯ ДАТА',
+    posterLabel: 'LIVE<br>2026',
+    background: ''
+  };
+  const catalogCards = $$('#concertList .concert-card[data-artist]');
+  const artistEvents = followedArtists.flatMap(({ name }) => {
+    const cards = catalogCards.filter(card => card.dataset.artist === name);
+    if (!cards.length) {
+      return [{
+        artist: name,
+        month: '—',
+        day: '—',
+        weekday: '—',
+        eyebrow: 'ОТСЛЕЖИВАЕМЫЙ АРТИСТ',
+        details: 'Новых дат пока нет',
+        cta: 'Следим за анонсами',
+        label: 'ЖДЁМ АНОНСОВ',
+        posterLabel: 'LIVE<br>2026',
+        background: '',
+        isEmpty: true
+      }];
+    }
+    return cards.map(card => {
+      const date = $('.poster-date', card);
+      const poster = $('.poster', card);
+      const status = $('.ticket-status', card);
+      const price = $('.price-trigger', card) || $('.concert-footer strong', card);
+      const title = $('.concert-title-row p', card);
+      const venue = $('.venue', card);
+      return {
+        artist: name,
+        month: $('small', date)?.textContent || '',
+        day: $('strong', date)?.textContent || '',
+        weekday: $('em', date)?.textContent || '',
+        eyebrow: 'КОНЦЕРТ АРТИСТА',
+        details: [title?.textContent, venue?.textContent].filter(Boolean).join(' · '),
+        cta: price?.textContent || 'Подробнее',
+        label: status?.textContent || 'КОНЦЕРТ',
+        posterLabel: $('.poster-label', poster)?.textContent || 'LIVE',
+        background: poster ? getComputedStyle(poster).backgroundImage : '',
+        isEmpty: false
+      };
+    });
+  });
+  featuredEvents = artistEvents.length ? artistEvents : [fallback];
+  if (preferredArtist) {
+    const preferredIndex = featuredEvents.findIndex(event => event.artist === preferredArtist);
+    if (preferredIndex >= 0) featuredIndex = preferredIndex;
+  }
+  featuredIndex = Math.min(featuredIndex, featuredEvents.length - 1);
+  const event = featuredEvents[featuredIndex] || fallback;
+  const card = $('#featuredConcert');
+  const art = $('.featured-art', card);
+  art.style.backgroundImage = event.background || '';
+  $('.featured-word', art).innerHTML = event.posterLabel;
+  $('.featured-sticker', art).textContent = event.label;
+  $('[data-featured="month"]', card).textContent = event.month;
+  $('[data-featured="day"]', card).textContent = event.day;
+  $('[data-featured="weekday"]', card).textContent = event.weekday;
+  $('[data-featured="eyebrow"]', card).textContent = event.eyebrow;
+  $('[data-featured="artist"]', card).textContent = event.artist;
+  $('[data-featured="details"]', card).textContent = event.details;
+  $('[data-featured="cta"]', card).textContent = event.cta;
+  card.classList.toggle('featured-empty', Boolean(event.isEmpty));
+  const pagination = $('.featured-pagination', card);
+  pagination.innerHTML = featuredEvents.map((_, index) =>
+    `<i data-index="${index}" class="${index === featuredIndex ? 'selected' : ''}"></i>`
+  ).join('');
 }
 
 renderTracked();

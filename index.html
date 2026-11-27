@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#111111" />
   <title>Концерты — Яндекс Музыка</title>
-  <link rel="stylesheet" href="styles.css?v=no-heading-or-bell" />
+  <link rel="stylesheet" href="styles.css?v=tracked-artist-hero" />
 </head>
 <body>
   <div class="app-shell">
@@ -29,20 +29,11 @@
           <span class="featured-art"><span class="featured-orb"></span><span class="featured-word">LIVE<br>2026</span><span class="featured-sticker">НОВАЯ<br>ДАТА</span></span>
           <span class="featured-ticket-notch top" aria-hidden="true"></span>
           <span class="featured-ticket-notch side" aria-hidden="true"></span>
-          <span class="featured-date"><small>ДЕК</small><strong>14</strong><em>ПН</em></span>
-          <span class="featured-copy"><small>КОНЦЕРТ НЕДЕЛИ</small><strong>Монеточка</strong><span>14 декабря · Санкт-Петербург</span></span>
-          <span class="featured-cta">Билеты от 2 100 ₽ <b>→</b></span>
+          <span class="featured-date"><small data-featured="month">ДЕК</small><strong data-featured="day">14</strong><em data-featured="weekday">ПН</em></span>
+          <span class="featured-copy"><small data-featured="eyebrow">КОНЦЕРТ НЕДЕЛИ</small><strong data-featured="artist">Монеточка</strong><span data-featured="details">14 декабря · Санкт-Петербург</span></span>
+          <span class="featured-cta"><span data-featured="cta">Билеты от 2 100 ₽</span> <b>→</b></span>
           <span class="featured-pagination"><i class="selected"></i><i></i><i></i></span>
         </button>
-
-        <section class="recommend-block">
-          <div class="section-heading"><h2>Следите за любимыми</h2><button class="text-button" data-tab="artists">Мои артисты</button></div>
-          <div class="recommend-card">
-            <span class="avatar avatar-dorn"><span>ИД</span></span>
-            <span class="recommend-copy"><strong>Иван Дорн</strong><small>Новые даты и билеты — в одном месте</small></span>
-            <button class="recommend-follow" data-artist="Иван Дорн" aria-label="Открыть Ивана Дорна">+</button>
-          </div>
-        </section>
 
         <section class="recommend-block concert-recommendations">
           <div class="section-heading"><h2>Концерты для вас</h2><span class="section-actions"><button class="text-button" data-tab="calendar">Календарь</button><button class="filter-button" id="filterButton">Фильтры</button></span></div>
@@ -187,6 +178,6 @@
   </aside>
 
   <div class="toast" id="toast"></div>
-  <script src="app.js?v=multi-artist-follow"></script>
+  <script src="app.js?v=tracked-artist-hero"></script>
 </body>
 </html>
