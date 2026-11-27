@@ -410,6 +410,7 @@ main::-webkit-scrollbar { display:none; }
 .concert-footer { margin-top:auto; flex-wrap:wrap; row-gap:6px; }
 .ticket-status { padding:4px 6px; font-size:9px; }
 .concert-footer strong { font-size:10px; white-space:nowrap; }
+.price-trigger { border:0; background:none; color:inherit; font:inherit; font-size:10px; font-weight:700; padding:0; white-space:nowrap; }
 .populated-concerts { padding:4px 0 14px; }
 .populated-concerts h3 { margin:12px 18px 10px; }
 .populated-grid { padding-top:2px; }

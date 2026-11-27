@@ -65,7 +65,7 @@
               <p class="venue">Космонавт · Санкт-Петербург</p>
               <div class="concert-footer">
                 <span class="ticket-status selling">Билеты есть</span>
-                <strong>от 2 100 ₽</strong>
+                <button class="price-trigger" type="button" aria-label="от 2 100 рублей — пример уведомления о снижении цены">от 2 100 ₽</button>
               </div>
             </div>
           </article>
@@ -118,17 +118,6 @@
           </div>
         </section>
 
-        <section class="recommend-block">
-          <div class="section-heading"><h2>Изменения билетов</h2><button class="text-button" id="priceAlertOpen">Все</button></div>
-          <div class="alerts" id="alerts">
-            <button class="alert-card" data-alert="sale">
-              <span class="alert-icon yellow">%</span>
-              <span class="alert-copy"><strong>Билеты подешевели</strong><small>Монеточка · «Дискотека»</small></span>
-              <span class="old-price">2 900 ₽</span>
-              <span class="new-price">от 2 100 ₽</span>
-            </button>
-          </div>
-        </section>
       </section>
 
       <section class="panel" id="calendar">
@@ -198,6 +187,6 @@
   </aside>
 
   <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=remove-ticket-changes-section"></script>
 </body>
 </html>

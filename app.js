@@ -43,10 +43,6 @@ $$('[data-heart]').forEach(button => {
   });
 });
 
-$('#notificationsButton').addEventListener('click', () => {
-  openNotifications();
-});
-
 function openNotifications() {
   openSheet(`
     <div class="sheet-title"><h2>Уведомление</h2><button class="close-sheet" aria-label="Закрыть">×</button></div>
@@ -67,7 +63,7 @@ function openNotifications() {
   });
 }
 
-$('#alerts')?.addEventListener('click', openNotifications);
+$$('.price-trigger').forEach(button => button.addEventListener('click', openNotifications));
 
 function artistSettingsSheet() {
   openSheet(`
@@ -197,7 +193,6 @@ $('#featuredConcert .featured-pagination').addEventListener('click', event => {
     $$('#featuredConcert .featured-pagination i').forEach(dot => dot.classList.toggle('selected', dot === event.target));
   }
 });
-$('#priceAlertOpen').addEventListener('click', openNotifications);
 $('#playerToggle').addEventListener('click', event => {
   const playing = event.currentTarget.textContent === 'Ⅱ';
   event.currentTarget.textContent = playing ? '▶' : 'Ⅱ';
